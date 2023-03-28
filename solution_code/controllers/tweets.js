@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
+//Import the tweet model
+const Tweet = require('../models/tweet')
 
 // Create
 router.post('/', async (req, res) => {
-	res.send('tweet post route');
+	// what is the key we are looking for that has the data (Answer: req.body)
+	res.send(req.body);
 });
 
 // Index
