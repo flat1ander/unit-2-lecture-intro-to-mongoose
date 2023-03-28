@@ -2,36 +2,48 @@ const express = require('express');
 const router = express.Router();
 //Import the tweet model
 const Tweet = require('../models/tweet')
-
+const tweetSeed = require('../db/tweetSeed')
 // Create
 router.post('/', async (req, res) => {
-	// what is the key we are looking for that has the data (Answer: req.body)
-	res.send(req.body);
+	// confirmed req.body has our data
+	// create a new document in the collection (mongo)
+	// wait for this line of code to finish
+	const tweet = await Tweet.create(req.body)
+	//then do this thing
+	res.send(tweet)
 });
 
 // Index
 router.get('/', async (req, res) => {
-	res.send('tweet index route');
+	const tweets = await Tweet.find({})
+	res.send(tweets);
 });
 
 // Seed
 router.get('/seed', async (req, res) => {
-	res.redirect('tweet seed route');
+	await Tweet.deleteMany({})
+	await Tweet.create(tweetSeed)
+	res.redirect('/tweets');
 });
 
 // Show
 router.get('/:id', async (req, res) => {
-	res.send('tweet show route');
+	const tweet = await Tweet.findById(req.params.id)
+	res.send(tweet);
 });
 
 // Delete
 router.delete('/:id', async (req, res) => {
-	res.send('tweet delete route');
+	const tweet = await Tweet.findByIdAndDelete(req.params.id)
+	res.send({success: true, tweet});
 });
 
 // Update
 router.put('/:id', async (req, res) => {
-	res.send('tweet update route');
+	const tweet = await Tweet.findByIdAndUpdate(req.params.id, req.body, {
+		new: true
+	})
+	res.send(tweet);
 });
 
 module.exports = router;
